@@ -1,0 +1,5 @@
+import 'clean.justfile'
+import 'decomposer.justfile'
+import 'phpcs.justfile'
+import 'phpstan.justfile'
+import 'phpunit.justfile'
