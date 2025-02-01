@@ -1,10 +1,20 @@
-github_actions := env('github_actions', env('GITHUB_ACTIONS', '0'))
-
-phpstan level='6':
+phpstan level='<default>' error_format='table':
     #!/usr/bin/env bash
-    if [ "{{github_actions}}" = "1" ]; then
-      github="--error-format=github"
+
+    if [ -e "tests/phpstan.neon.dist" ]; then
+      CONFIG="-c tests/phpstan.neon.dist"
     else
-      github=""
+      CONFIG=""
     fi
-    phpstan analyze src -l {{level}} -c tests/phpstan.neon.dist $github
+
+    if [ "{{level}}" = "<default>" ]; then
+      if [ -z "$CONFIG" ]; then
+        LEVEL="-l 0"
+      else
+        LEVEL=""
+      fi
+    else
+      LEVEL="-l {{level}}"
+    fi
+
+    phpstan analyze $LEVEL --error-format={{error_format}} $CONFIG
