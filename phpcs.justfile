@@ -1,10 +1,17 @@
 import 'clean.justfile'
 
 github_actions := env('github_actions', env('GITHUB_ACTIONS', '0'))
+default_coding_standard := env('default_coding_standard', env('LUNR_CODING_STANDARD', '/var/www/libs/lunr-coding-standard/Lunr/'))
 
-phpcs standard='../lunr-coding-standard/Lunr' bootstrap='bootstrap.php' installed_paths='third-party/slevomat/': (clean_log 'checkstyle.xml')
+phpcs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-party/slevomat/': (clean_log 'checkstyle.xml')
     #!/usr/bin/env bash
     args=""
+
+    if [ "{{standard}}" = "<default>" ]; then
+      STANDARD="{{default_coding_standard}}"
+    else
+      STANDARD="{{standard}}"
+    fi
 
     if [ "{{github_actions}}" = "1" ]; then
       args="$args --report-checkstyle=build/logs/checkstyle.xml"
@@ -12,45 +19,51 @@ phpcs standard='../lunr-coding-standard/Lunr' bootstrap='bootstrap.php' installe
 
     if [ -e "{{bootstrap}}" ]; then
       args="$args --bootstrap={{bootstrap}}"
-    elif [ -e "{{standard}}/{{bootstrap}}"  ]; then
-      args="$args --bootstrap={{standard}}/{{bootstrap}}"
-    elif [ -e "$(dirname {{standard}})/{{bootstrap}}"  ]; then
-      args="$args --bootstrap=$(dirname {{standard}})/{{bootstrap}}"
+    elif [ -e "$STANDARD/{{bootstrap}}"  ]; then
+      args="$args --bootstrap=$STANDARD/{{bootstrap}}"
+    elif [ -e "$(dirname $STANDARD)/{{bootstrap}}"  ]; then
+      args="$args --bootstrap=$(dirname $STANDARD)/{{bootstrap}}"
     fi
 
     if [ -e "./{{installed_paths}}" ]; then
       args="$args --runtime-set installed_paths $(realpath {{installed_paths}})"
-    elif [ -e "{{standard}}/{{installed_paths}}" ]; then
-      args="$args --runtime-set installed_paths $(realpath {{standard}}/{{installed_paths}})"
-    elif [ -e "$(dirname {{standard}})/{{installed_paths}}" ]; then
-      args="$args --runtime-set installed_paths $(realpath $(dirname {{standard}})/{{installed_paths}})"
+    elif [ -e "$STANDARD/{{installed_paths}}" ]; then
+      args="$args --runtime-set installed_paths $(realpath $STANDARD/{{installed_paths}})"
+    elif [ -e "$(dirname $STANDARD)/{{installed_paths}}" ]; then
+      args="$args --runtime-set installed_paths $(realpath $(dirname $STANDARD)/{{installed_paths}})"
     fi
 
     phpcs \
       -p \
       --report-full \
-      --standard={{standard}} \
+      --standard=$STANDARD \
       $args \
       src
 
-phpcbf standard='../lunr-coding-standard/Lunr' bootstrap='bootstrap.php' installed_paths='third-party/slevomat/':
+phpcbf standard='<default>' bootstrap='bootstrap.php' installed_paths='third-party/slevomat/':
     #!/usr/bin/env bash
     args=""
 
+    if [ "{{standard}}" = "<default>" ]; then
+      STANDARD="{{default_coding_standard}}"
+    else
+      STANDARD="{{standard}}"
+    fi
+
     if [ -e "{{bootstrap}}" ]; then
       args="$args --bootstrap={{bootstrap}}"
-    elif [ -e "{{standard}}/{{bootstrap}}"  ]; then
-      args="$args --bootstrap={{standard}}/{{bootstrap}}"
-    elif [ -e "$(dirname {{standard}})/{{bootstrap}}"  ]; then
-      args="$args --bootstrap=$(dirname {{standard}})/{{bootstrap}}"
+    elif [ -e "$STANDARD/{{bootstrap}}"  ]; then
+      args="$args --bootstrap=$STANDARD/{{bootstrap}}"
+    elif [ -e "$(dirname $STANDARD)/{{bootstrap}}"  ]; then
+      args="$args --bootstrap=$(dirname $STANDARD)/{{bootstrap}}"
     fi
 
     if [ -e "./{{installed_paths}}" ]; then
       args="$args --runtime-set installed_paths $(realpath {{installed_paths}})"
-    elif [ -e "{{standard}}/{{installed_paths}}" ]; then
-      args="$args --runtime-set installed_paths $(realpath {{standard}}/{{installed_paths}})"
-    elif [ -e "$(dirname {{standard}})/{{installed_paths}}" ]; then
-      args="$args --runtime-set installed_paths $(realpath $(dirname {{standard}})/{{installed_paths}})"
+    elif [ -e "$STANDARD/{{installed_paths}}" ]; then
+      args="$args --runtime-set installed_paths $(realpath $STANDARD/{{installed_paths}})"
+    elif [ -e "$(dirname $STANDARD)/{{installed_paths}}" ]; then
+      args="$args --runtime-set installed_paths $(realpath $(dirname $STANDARD)/{{installed_paths}})"
     fi
 
     phpcbf \
