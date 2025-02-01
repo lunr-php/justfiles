@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright 2025 Move Agency Group B.V., Zwolle, The Netherlands
+# SPDX-License-Identifier: MIT
+
 phpstan level='<default>' error_format='table':
     #!/usr/bin/env bash
 
