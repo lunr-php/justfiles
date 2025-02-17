@@ -71,6 +71,6 @@ phpcbf standard='<default>' bootstrap='bootstrap.php' installed_paths='third-par
 
     phpcbf \
       -p \
-      --standard={{standard}} \
+      --standard=$STANDARD \
       $args \
       src
