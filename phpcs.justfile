@@ -88,3 +88,34 @@ phpcbf standard='<default>' bootstrap='bootstrap.php' installed_paths='third-par
       $args \
       $extra_files \
       src
+
+phpcs-sniffs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-party/slevomat/':
+    #!/usr/bin/env bash
+    args=""
+
+    if [ "{{standard}}" = "<default>" ]; then
+      STANDARD="{{default_coding_standard}}"
+    else
+      STANDARD="{{standard}}"
+    fi
+
+    if [ -e "{{bootstrap}}" ]; then
+      args="$args --bootstrap={{bootstrap}}"
+    elif [ -e "$STANDARD/{{bootstrap}}"  ]; then
+      args="$args --bootstrap=$STANDARD/{{bootstrap}}"
+    elif [ -e "$(dirname $STANDARD)/{{bootstrap}}"  ]; then
+      args="$args --bootstrap=$(dirname $STANDARD)/{{bootstrap}}"
+    fi
+
+    if [ -e "./{{installed_paths}}" ]; then
+      args="$args --runtime-set installed_paths $(realpath {{installed_paths}})"
+    elif [ -e "$STANDARD/{{installed_paths}}" ]; then
+      args="$args --runtime-set installed_paths $(realpath $STANDARD/{{installed_paths}})"
+    elif [ -e "$(dirname $STANDARD)/{{installed_paths}}" ]; then
+      args="$args --runtime-set installed_paths $(realpath $(dirname $STANDARD)/{{installed_paths}})"
+    fi
+
+    phpcs \
+      --standard=$STANDARD \
+      $args \
+      -e
