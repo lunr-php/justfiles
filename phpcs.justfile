@@ -39,7 +39,7 @@ phpcs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-part
     if ! [ -z $(which fd &> /dev/null) ]; then
       extra_files=$(fd -e php -E "config/*" -E "src/*")
     else
-      extra_files=$(git ls-files --cached --others --exclude-standard '*.php' | grep -vE '^config/|^src/')
+      extra_files=$(git ls-files --cached --others --exclude-standard '*.php' | grep -vE '^config/|^src|^vendor/')
     fi
 
     phpcs \
@@ -79,7 +79,7 @@ phpcbf standard='<default>' bootstrap='bootstrap.php' installed_paths='third-par
     if ! [ -z $(which fd &> /dev/null) ]; then
       extra_files=$(fd -e php -E "config/*" -E "src/*")
     else
-      extra_files=$(git ls-files --cached --others --exclude-standard '*.php' | grep -vE '^config/|^src/')
+      extra_files=$(git ls-files --cached --others --exclude-standard '*.php' | grep -vE '^config/|^src/|^vendor')
     fi
 
     phpcbf \
