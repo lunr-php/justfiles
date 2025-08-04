@@ -10,6 +10,12 @@ phpstan level='<default>' error_format='table':
       CONFIG=""
     fi
 
+    if [ -e "tests/phpstan.autoload.inc.php" ]; then
+      AUTOLOAD="-a tests/phpstan.autoload.inc.php"
+    else
+      AUTOLOAD=""
+    fi
+
     if [ "{{level}}" = "<default>" ]; then
       if [ -z "$CONFIG" ]; then
         LEVEL="-l 0"
@@ -20,4 +26,4 @@ phpstan level='<default>' error_format='table':
       LEVEL="-l {{level}}"
     fi
 
-    phpstan analyze $LEVEL --error-format={{error_format}} $CONFIG
+    phpstan analyze $LEVEL --error-format={{error_format}} $CONFIG $AUTOLOAD
