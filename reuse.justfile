@@ -2,4 +2,4 @@
 # SPDX-License-Identifier: MIT
 
 reuse-lint:
-    reuse lint
+    reuse --include-submodules lint
