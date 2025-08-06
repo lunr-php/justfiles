@@ -8,6 +8,7 @@ default_coding_standard := env('default_coding_standard', env('LUNR_CODING_STAND
 
 phpcs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-party/slevomat/': (clean_log 'checkstyle.xml')
     #!/usr/bin/env bash
+
     args=""
 
     if [ "{{standard}}" = "<default>" ]; then
@@ -16,7 +17,7 @@ phpcs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-part
       STANDARD="{{standard}}"
     fi
 
-    if [ "{{github_actions}}" = "1" ]; then
+    if [ "{{github_actions}}" != "0" ]; then
       args="$args --report-checkstyle=build/logs/checkstyle.xml"
     fi
 
