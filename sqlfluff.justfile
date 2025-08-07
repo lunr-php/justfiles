@@ -21,7 +21,7 @@ sqlfluff paths='<default>' dialect='<default>':
       PATHS="{{paths}}"
     fi
 
-    if [ "{{github_actions}}" = "1" ]; then
+    if [ "{{github_actions}}" != "0" ]; then
       args="$args --disable-progress-bar"
     fi
 
@@ -48,7 +48,7 @@ sqlfluff-fix paths='<default>' dialect='<default>':
       PATHS="{{paths}}"
     fi
 
-    if [ "{{github_actions}}" = "1" ]; then
+    if [ "{{github_actions}}" != "0" ]; then
       args="$args --disable-progress-bar"
     fi
 
