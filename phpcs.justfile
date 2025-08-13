@@ -37,11 +37,7 @@ phpcs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-part
       args="$args --runtime-set installed_paths $(realpath $(dirname $STANDARD)/{{installed_paths}})"
     fi
 
-    if ! [ -z $(which fd &> /dev/null) ]; then
-      extra_files=$(fd -e php -E "config/*" -E "src/*")
-    else
-      extra_files=$(git ls-files --cached --others --exclude-standard '*.php' | grep -vE '^config/|^src|^vendor/')
-    fi
+    extra_files=$(git ls-files --cached --exclude-standard '*.php' | grep -vE '^config/locator/|^src')
 
     phpcs \
       -p \
@@ -77,11 +73,7 @@ phpcbf standard='<default>' bootstrap='bootstrap.php' installed_paths='third-par
       args="$args --runtime-set installed_paths $(realpath $(dirname $STANDARD)/{{installed_paths}})"
     fi
 
-    if ! [ -z $(which fd &> /dev/null) ]; then
-      extra_files=$(fd -e php -E "config/*" -E "src/*")
-    else
-      extra_files=$(git ls-files --cached --others --exclude-standard '*.php' | grep -vE '^config/|^src/|^vendor')
-    fi
+    extra_files=$(git ls-files --cached --exclude-standard '*.php' | grep -vE '^config/locator/|^src/')
 
     phpcbf \
       -p \
