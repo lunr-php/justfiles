@@ -4,6 +4,26 @@
 database_migration_dir := env('database_migration_dir', 'docs/database')
 
 [private]
+generate-dependency-changelog:
+    #!/usr/bin/env bash
+    if ! [ -e decomposer.json ]; then
+      # skip if we don't have a decomposer.json file
+      exit 0
+    fi
+
+    BASE_RELEASE=$(git describe --tags --abbrev=0)
+
+    { git show $BASE_RELEASE:decomposer.json; cat decomposer.json; } | jq --slurp -r '
+      (.[0] | map_values(.version)) as $a |
+      (.[1] | map_values(.version)) as $b |
+      [
+        ($a | keys[] | select($b[.] == null) | "- Dropped dependency on " + .),
+        ($b | keys[] | select($a[.] == null) | "- Added dependency on " + . + " (" + $b[.] + ")"),
+        ($b | keys[] | select($a[.] != null and $a[.] != $b[.]) | "- Updated to " + . + " " + $b[.])
+      ] | .[]
+    '
+
+[private]
 generate-release-notes-section-general:
     #!/usr/bin/env bash
 
@@ -11,6 +31,8 @@ generate-release-notes-section-general:
     LOG=$(git log --oneline --no-merges ${BASE_RELEASE}..)
 
     echo "General:"
+
+    just generate-dependency-changelog
 
     while read commit && ! [ -z "$commit" ]; do
       HASH=$(echo "$commit" | cut -d " " -f 1)
