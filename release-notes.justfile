@@ -4,14 +4,14 @@
 database_migration_dir := env('database_migration_dir', 'docs/database')
 
 [private]
-generate-dependency-changelog:
+generate-dependency-changelog base:
     #!/usr/bin/env bash
     if ! [ -e decomposer.json ]; then
       # skip if we don't have a decomposer.json file
       exit 0
     fi
 
-    BASE_RELEASE=$(git describe --tags --abbrev=0)
+    BASE_RELEASE="{{base}}"
 
     { git show $BASE_RELEASE:decomposer.json; cat decomposer.json; } | jq --slurp -r '
       (.[0] | map_values(.version)) as $a |
@@ -24,15 +24,15 @@ generate-dependency-changelog:
     '
 
 [private]
-generate-release-notes-section-general:
+generate-release-notes-section-general base:
     #!/usr/bin/env bash
 
-    BASE_RELEASE=$(git describe --tags --abbrev=0)
+    BASE_RELEASE="{{base}}"
     LOG=$(git log --oneline --no-merges ${BASE_RELEASE}..)
 
     echo "General:"
 
-    just generate-dependency-changelog
+    just generate-dependency-changelog "$BASE_RELEASE"
 
     while read commit && ! [ -z "$commit" ]; do
       HASH=$(echo "$commit" | cut -d " " -f 1)
@@ -50,10 +50,10 @@ generate-release-notes-section-general:
     echo ""
 
 [private]
-generate-release-notes-section-ci:
+generate-release-notes-section-ci base:
     #!/usr/bin/env bash
 
-    BASE_RELEASE=$(git describe --tags --abbrev=0)
+    BASE_RELEASE="{{base}}"
     LOG=$(git log --oneline --no-merges ${BASE_RELEASE}..)
 
     echo "CI:"
@@ -74,10 +74,10 @@ generate-release-notes-section-ci:
     echo ""
 
 [private]
-generate-release-notes-section-database:
+generate-release-notes-section-database base:
     #!/usr/bin/env bash
 
-    BASE_RELEASE=$(git describe --tags --abbrev=0)
+    BASE_RELEASE="{{base}}"
     LOG=$(git log --oneline --no-merges ${BASE_RELEASE}..)
 
     echo "Database:"
@@ -98,10 +98,10 @@ generate-release-notes-section-database:
     echo ""
 
 [private]
-generate-release-notes-section component='':
+generate-release-notes-section base component='':
     #!/usr/bin/env bash
 
-    BASE_RELEASE=$(git describe --tags --abbrev=0)
+    BASE_RELEASE="{{base}}"
     LOG=$(git log --oneline --no-merges ${BASE_RELEASE}..)
 
     echo "{{component}}:"
@@ -111,17 +111,22 @@ generate-release-notes-section component='':
     done <<< "$(echo "$LOG" | grep "{{component}}:")"
     echo ""
 
-release-notes:
+release-notes base='<default>':
     #!/usr/bin/env bash
 
-    BASE_RELEASE=$(git describe --tags --abbrev=0)
+    if [ "{{base}}" = "<default>" ]; then
+      BASE_RELEASE=$(git describe --tags --abbrev=0 2>/dev/null)
+    else
+      BASE_RELEASE="{{base}}"
+    fi
+
     LOG=$(git log --oneline --no-merges ${BASE_RELEASE}..)
 
-    just generate-release-notes-section-general
-    just generate-release-notes-section-ci
+    just generate-release-notes-section-general "$BASE_RELEASE"
+    just generate-release-notes-section-ci "$BASE_RELEASE"
 
     if [ -e "{{database_migration_dir}}" ]; then
-      just generate-release-notes-section-database
+      just generate-release-notes-section-database "$BASE_RELEASE"
     fi
 
     COMPONENTS=$(echo "$LOG" | cut -d " " -f 2 | cut -d ":" -f 1 | sort | uniq)
@@ -131,5 +136,5 @@ release-notes:
         continue
       fi
 
-      just generate-release-notes-section "$i"
+      just generate-release-notes-section "$BASE_RELEASE" "$i"
     done
