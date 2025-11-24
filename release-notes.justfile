@@ -116,6 +116,14 @@ release-notes base='<default>':
 
     if [ "{{base}}" = "<default>" ]; then
       BASE_RELEASE=$(git describe --tags --abbrev=0 2>/dev/null)
+
+      if [ "$?" = 128 ]; then
+        # Fresh repo without any tags
+        echo "General:"
+        echo "- Initial release"
+
+        exit 0
+      fi
     else
       BASE_RELEASE="{{base}}"
     fi
