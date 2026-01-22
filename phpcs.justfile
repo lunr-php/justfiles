@@ -9,6 +9,14 @@ default_coding_standard := env('default_coding_standard', env('LUNR_CODING_STAND
 phpcs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-party/slevomat/': (clean_log 'checkstyle.xml')
     #!/usr/bin/env bash
 
+    REPO_ROOT=$(git rev-parse --show-toplevel)
+
+    if [ -x "${REPO_ROOT}/vendor/bin/phpcs" ]; then
+      PHPCS="${REPO_ROOT}/vendor/bin/phpcs"
+    else
+      PHPCS="phpcs"
+    fi
+
     args=""
 
     if [ "{{standard}}" = "<default>" ]; then
@@ -39,7 +47,7 @@ phpcs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-part
 
     extra_files=$(git ls-files --cached --exclude-standard '*.php' | grep -vE '^config/locator/|^tests/statics/locator/|^src')
 
-    phpcs \
+    "${PHPCS}" \
       -p \
       --report-full \
       --standard=$STANDARD \
@@ -49,6 +57,15 @@ phpcs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-part
 
 phpcbf standard='<default>' bootstrap='bootstrap.php' installed_paths='third-party/slevomat/':
     #!/usr/bin/env bash
+
+    REPO_ROOT=$(git rev-parse --show-toplevel)
+
+    if [ -x "${REPO_ROOT}/vendor/bin/phpcbf" ]; then
+      PHPCBF="${REPO_ROOT}/vendor/bin/phpcbf"
+    else
+      PHPCBF="phpcbf"
+    fi
+
     args=""
 
     if [ "{{standard}}" = "<default>" ]; then
@@ -75,7 +92,7 @@ phpcbf standard='<default>' bootstrap='bootstrap.php' installed_paths='third-par
 
     extra_files=$(git ls-files --cached --exclude-standard '*.php' | grep -vE '^config/locator/|^tests/statics/locator/|^src/')
 
-    phpcbf \
+    "${PHPCBF}" \
       -p \
       --standard=$STANDARD \
       $args \
@@ -84,6 +101,15 @@ phpcbf standard='<default>' bootstrap='bootstrap.php' installed_paths='third-par
 
 phpcs-sniffs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-party/slevomat/':
     #!/usr/bin/env bash
+
+    REPO_ROOT=$(git rev-parse --show-toplevel)
+
+    if [ -x "${REPO_ROOT}/vendor/bin/phpcs" ]; then
+      PHPCS="${REPO_ROOT}/vendor/bin/phpcs"
+    else
+      PHPCS="phpcs"
+    fi
+
     args=""
 
     if [ "{{standard}}" = "<default>" ]; then
@@ -108,7 +134,7 @@ phpcs-sniffs standard='<default>' bootstrap='bootstrap.php' installed_paths='thi
       args="$args --runtime-set installed_paths $(realpath $(dirname $STANDARD)/{{installed_paths}})"
     fi
 
-    phpcs \
+    ${PHPCS} \
       --standard=$STANDARD \
       $args \
       -e

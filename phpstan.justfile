@@ -4,6 +4,14 @@
 phpstan level='<default>' error_format='table':
     #!/usr/bin/env bash
 
+    REPO_ROOT=$(git rev-parse --show-toplevel)
+
+    if [ -x "${REPO_ROOT}/vendor/bin/phpstan" ]; then
+      PHPSTAN="${REPO_ROOT}/vendor/bin/phpstan"
+    else
+      PHPSTAN="phpstan"
+    fi
+
     if [ -e "tests/phpstan.neon.dist" ]; then
       CONFIG="-c tests/phpstan.neon.dist"
     else
@@ -26,4 +34,4 @@ phpstan level='<default>' error_format='table':
       LEVEL="-l {{level}}"
     fi
 
-    phpstan analyze $LEVEL --error-format={{error_format}} $CONFIG $AUTOLOAD
+    "${PHPSTAN}" analyze $LEVEL --error-format={{error_format}} $CONFIG $AUTOLOAD
