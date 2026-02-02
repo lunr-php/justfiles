@@ -10,14 +10,29 @@ phpcs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-part
     #!/usr/bin/env bash
 
     REPO_ROOT=$(git rev-parse --show-toplevel)
+    args=""
 
     if [ -x "${REPO_ROOT}/vendor/bin/phpcs" ]; then
       PHPCS="${REPO_ROOT}/vendor/bin/phpcs"
     else
       PHPCS="phpcs"
-    fi
 
-    args=""
+      if [ -e "{{bootstrap}}" ]; then
+        args="$args --bootstrap={{bootstrap}}"
+      elif [ -e "$STANDARD/{{bootstrap}}"  ]; then
+        args="$args --bootstrap=$STANDARD/{{bootstrap}}"
+      elif [ -e "$(dirname $STANDARD)/{{bootstrap}}"  ]; then
+        args="$args --bootstrap=$(dirname $STANDARD)/{{bootstrap}}"
+      fi
+
+      if [ -e "./{{installed_paths}}" ]; then
+        args="$args --runtime-set installed_paths $(realpath {{installed_paths}})"
+      elif [ -e "$STANDARD/{{installed_paths}}" ]; then
+        args="$args --runtime-set installed_paths $(realpath $STANDARD/{{installed_paths}})"
+      elif [ -e "$(dirname $STANDARD)/{{installed_paths}}" ]; then
+        args="$args --runtime-set installed_paths $(realpath $(dirname $STANDARD)/{{installed_paths}})"
+      fi
+    fi
 
     if [ "{{standard}}" = "<default>" ]; then
       STANDARD="{{default_coding_standard}}"
@@ -27,22 +42,6 @@ phpcs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-part
 
     if [ "{{github_actions}}" != "0" ]; then
       args="$args --report-checkstyle=build/logs/checkstyle.xml"
-    fi
-
-    if [ -e "{{bootstrap}}" ]; then
-      args="$args --bootstrap={{bootstrap}}"
-    elif [ -e "$STANDARD/{{bootstrap}}"  ]; then
-      args="$args --bootstrap=$STANDARD/{{bootstrap}}"
-    elif [ -e "$(dirname $STANDARD)/{{bootstrap}}"  ]; then
-      args="$args --bootstrap=$(dirname $STANDARD)/{{bootstrap}}"
-    fi
-
-    if [ -e "./{{installed_paths}}" ]; then
-      args="$args --runtime-set installed_paths $(realpath {{installed_paths}})"
-    elif [ -e "$STANDARD/{{installed_paths}}" ]; then
-      args="$args --runtime-set installed_paths $(realpath $STANDARD/{{installed_paths}})"
-    elif [ -e "$(dirname $STANDARD)/{{installed_paths}}" ]; then
-      args="$args --runtime-set installed_paths $(realpath $(dirname $STANDARD)/{{installed_paths}})"
     fi
 
     extra_files=$(git ls-files --cached --exclude-standard '*.php' | grep -vE '^config/locator/|^tests/statics/locator/|^src')
@@ -59,35 +58,34 @@ phpcbf standard='<default>' bootstrap='bootstrap.php' installed_paths='third-par
     #!/usr/bin/env bash
 
     REPO_ROOT=$(git rev-parse --show-toplevel)
+    args=""
 
     if [ -x "${REPO_ROOT}/vendor/bin/phpcbf" ]; then
       PHPCBF="${REPO_ROOT}/vendor/bin/phpcbf"
     else
       PHPCBF="phpcbf"
-    fi
 
-    args=""
+      if [ -e "{{bootstrap}}" ]; then
+        args="$args --bootstrap={{bootstrap}}"
+      elif [ -e "$STANDARD/{{bootstrap}}"  ]; then
+        args="$args --bootstrap=$STANDARD/{{bootstrap}}"
+      elif [ -e "$(dirname $STANDARD)/{{bootstrap}}"  ]; then
+        args="$args --bootstrap=$(dirname $STANDARD)/{{bootstrap}}"
+      fi
+
+      if [ -e "./{{installed_paths}}" ]; then
+        args="$args --runtime-set installed_paths $(realpath {{installed_paths}})"
+      elif [ -e "$STANDARD/{{installed_paths}}" ]; then
+        args="$args --runtime-set installed_paths $(realpath $STANDARD/{{installed_paths}})"
+      elif [ -e "$(dirname $STANDARD)/{{installed_paths}}" ]; then
+        args="$args --runtime-set installed_paths $(realpath $(dirname $STANDARD)/{{installed_paths}})"
+      fi
+    fi
 
     if [ "{{standard}}" = "<default>" ]; then
       STANDARD="{{default_coding_standard}}"
     else
       STANDARD="{{standard}}"
-    fi
-
-    if [ -e "{{bootstrap}}" ]; then
-      args="$args --bootstrap={{bootstrap}}"
-    elif [ -e "$STANDARD/{{bootstrap}}"  ]; then
-      args="$args --bootstrap=$STANDARD/{{bootstrap}}"
-    elif [ -e "$(dirname $STANDARD)/{{bootstrap}}"  ]; then
-      args="$args --bootstrap=$(dirname $STANDARD)/{{bootstrap}}"
-    fi
-
-    if [ -e "./{{installed_paths}}" ]; then
-      args="$args --runtime-set installed_paths $(realpath {{installed_paths}})"
-    elif [ -e "$STANDARD/{{installed_paths}}" ]; then
-      args="$args --runtime-set installed_paths $(realpath $STANDARD/{{installed_paths}})"
-    elif [ -e "$(dirname $STANDARD)/{{installed_paths}}" ]; then
-      args="$args --runtime-set installed_paths $(realpath $(dirname $STANDARD)/{{installed_paths}})"
     fi
 
     extra_files=$(git ls-files --cached --exclude-standard '*.php' | grep -vE '^config/locator/|^tests/statics/locator/|^src/')
@@ -103,35 +101,34 @@ phpcs-sniffs standard='<default>' bootstrap='bootstrap.php' installed_paths='thi
     #!/usr/bin/env bash
 
     REPO_ROOT=$(git rev-parse --show-toplevel)
+    args=""
 
     if [ -x "${REPO_ROOT}/vendor/bin/phpcs" ]; then
       PHPCS="${REPO_ROOT}/vendor/bin/phpcs"
     else
       PHPCS="phpcs"
-    fi
 
-    args=""
+      if [ -e "{{bootstrap}}" ]; then
+        args="$args --bootstrap={{bootstrap}}"
+      elif [ -e "$STANDARD/{{bootstrap}}"  ]; then
+        args="$args --bootstrap=$STANDARD/{{bootstrap}}"
+      elif [ -e "$(dirname $STANDARD)/{{bootstrap}}"  ]; then
+        args="$args --bootstrap=$(dirname $STANDARD)/{{bootstrap}}"
+      fi
+
+      if [ -e "./{{installed_paths}}" ]; then
+        args="$args --runtime-set installed_paths $(realpath {{installed_paths}})"
+      elif [ -e "$STANDARD/{{installed_paths}}" ]; then
+        args="$args --runtime-set installed_paths $(realpath $STANDARD/{{installed_paths}})"
+      elif [ -e "$(dirname $STANDARD)/{{installed_paths}}" ]; then
+        args="$args --runtime-set installed_paths $(realpath $(dirname $STANDARD)/{{installed_paths}})"
+      fi
+    fi
 
     if [ "{{standard}}" = "<default>" ]; then
       STANDARD="{{default_coding_standard}}"
     else
       STANDARD="{{standard}}"
-    fi
-
-    if [ -e "{{bootstrap}}" ]; then
-      args="$args --bootstrap={{bootstrap}}"
-    elif [ -e "$STANDARD/{{bootstrap}}"  ]; then
-      args="$args --bootstrap=$STANDARD/{{bootstrap}}"
-    elif [ -e "$(dirname $STANDARD)/{{bootstrap}}"  ]; then
-      args="$args --bootstrap=$(dirname $STANDARD)/{{bootstrap}}"
-    fi
-
-    if [ -e "./{{installed_paths}}" ]; then
-      args="$args --runtime-set installed_paths $(realpath {{installed_paths}})"
-    elif [ -e "$STANDARD/{{installed_paths}}" ]; then
-      args="$args --runtime-set installed_paths $(realpath $STANDARD/{{installed_paths}})"
-    elif [ -e "$(dirname $STANDARD)/{{installed_paths}}" ]; then
-      args="$args --runtime-set installed_paths $(realpath $(dirname $STANDARD)/{{installed_paths}})"
     fi
 
     ${PHPCS} \
