@@ -1,0 +1,8 @@
+{
+  "name": "lunr/justfiles",
+  "description": "Shared recipes for common tooling in PHP projects",
+  "keywords": [ "just", "ci" ],
+  "homepage": "https://github.com/lunr-php/lunr-justfiles",
+  "type": "library",
+  "license": "MIT"
+}
