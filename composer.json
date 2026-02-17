@@ -1,5 +1,5 @@
 {
-  "name": "lunr/justfiles",
+  "name": "framna-nl/php-library-justfiles",
   "description": "Shared recipes for common tooling in PHP projects",
   "keywords": [ "just", "ci" ],
   "homepage": "https://github.com/lunr-php/lunr-justfiles",
