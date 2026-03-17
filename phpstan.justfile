@@ -14,6 +14,8 @@ phpstan level='<default>' error_format='table':
 
     if [ -e "tests/phpstan.neon.dist" ]; then
       CONFIG="-c tests/phpstan.neon.dist"
+    elif [ -e "phpstan.neon.dist" ]; then
+      CONFIG="-c phpstan.neon.dist"
     else
       CONFIG=""
     fi
