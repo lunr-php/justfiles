@@ -4,6 +4,7 @@
 import 'clean.justfile'
 
 github_actions := env('github_actions', env('GITHUB_ACTIONS', '0'))
+php_cs_fixer_ruleset := env('php_cs_fixer_ruleset', env('PHP_CS_FIXER_RULESET', ".php-cs-fixer.php"))
 
 php-cs-fixer: (clean_log 'php-cs-fixer-checkstyle.xml')
     #!/usr/bin/env bash
@@ -16,10 +17,22 @@ php-cs-fixer: (clean_log 'php-cs-fixer-checkstyle.xml')
       PHPCSFIXER="php-cs-fixer"
     fi
 
+    if [ -e "{{php_cs_fixer_ruleset}}" ]; then
+      args="--config={{php_cs_fixer_ruleset}}"
+    else
+      args=""
+    fi
+
+    args="$args --cache-file=build/.php-cs-fixer.cache"
+    files=$(git ls-files --cached --exclude-standard '*.php' | grep -vE '^config/locator/|^tests/statics/locator/|^src')
+    files="src $files"
+
     if [ "{{github_actions}}" != "0" ]; then
       $PHPCSFIXER \
         check \
         --format=checkstyle \
+        $args \
+        $files \
         2>/dev/null \
         1>build/logs/php-cs-fixer-checkstyle.xml
     fi
@@ -27,4 +40,6 @@ php-cs-fixer: (clean_log 'php-cs-fixer-checkstyle.xml')
     $PHPCSFIXER \
       check \
       --verbose \
-      --diff
+      --diff \
+      $args \
+      $files
