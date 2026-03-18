@@ -24,8 +24,8 @@ php-cs-fixer: (clean_log 'php-cs-fixer-checkstyle.xml')
     fi
 
     args="$args --cache-file=build/.php-cs-fixer.cache"
-    files=$(git ls-files --cached --exclude-standard '*.php' | grep -vE '^config/locator/|^tests/statics/locator/|^src')
-    files="src $files"
+    files=$(git ls-files --cached --exclude-standard '*.php' | grep -vE '^config/locator/|^tests/statics/locator/|^src|^tests/unit/')
+    files="src tests/unit $files"
 
     if [ "{{github_actions}}" != "0" ]; then
       $PHPCSFIXER \
