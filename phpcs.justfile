@@ -44,7 +44,7 @@ phpcs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-part
       args="$args --report-checkstyle=build/logs/checkstyle.xml"
     fi
 
-    extra_files=$(git ls-files --cached --exclude-standard '*.php' | grep -vE '^config/locator/|^tests/statics/locator/|^src')
+    extra_files=$(git ls-files --cached --exclude-standard '*.php' | grep -vE '^config/locator/|^tests/statics/locator/|^src|^tests/unit/')
 
     "${PHPCS}" \
       -p \
@@ -52,7 +52,7 @@ phpcs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-part
       --standard=$STANDARD \
       $args \
       $extra_files \
-      src
+      src tests/unit
 
 phpcbf standard='<default>' bootstrap='bootstrap.php' installed_paths='third-party/slevomat/':
     #!/usr/bin/env bash
@@ -88,14 +88,14 @@ phpcbf standard='<default>' bootstrap='bootstrap.php' installed_paths='third-par
       fi
     fi
 
-    extra_files=$(git ls-files --cached --exclude-standard '*.php' | grep -vE '^config/locator/|^tests/statics/locator/|^src/')
+    extra_files=$(git ls-files --cached --exclude-standard '*.php' | grep -vE '^config/locator/|^tests/statics/locator/|^src/|^tests/unit/')
 
     "${PHPCBF}" \
       -p \
       --standard=$STANDARD \
       $args \
       $extra_files \
-      src
+      src tests/unit
 
 phpcs-sniffs standard='<default>' bootstrap='bootstrap.php' installed_paths='third-party/slevomat/':
     #!/usr/bin/env bash
